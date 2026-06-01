@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Faltantes">
+<meta name="theme-color" content="#f5a623">
+<link rel="manifest" href="manifest.json">
+<!-- Ícono para iOS (se genera con canvas en JS) -->
+<link rel="apple-touch-icon" id="appleIcon">
+<title>Faltantes</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0d0f18;--card:#161926;--card2:#1e2235;--border:#272d45;
+  --orange:#f5a623;--orange2:#e8560b;--green:#22c55e;--red:#ef4444;
+  --text:#f0f2ff;--muted:#6b7499;--r:16px;
+}
+html,body{min-height:100%;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:16px;-webkit-text-size-adjust:100%;padding-bottom:env(safe-area-inset-bottom)}
+
+/* HEADER */
+.header{position:sticky;top:0;z-index:50;background:var(--card);
+  border-bottom:2px solid var(--orange);
+  padding:calc(env(safe-area-inset-top) + 10px) 18px 12px;
+  display:flex;align-items:center;gap:12px}
+.hicon{width:44px;height:44px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--orange),var(--orange2));
+  display:flex;align-items:center;justify-content:center;font-size:22px}
+.htitle{font-size:22px;font-weight:800;letter-spacing:1px;color:var(--orange);line-height:1}
+.hsub{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* INSTALL BANNER */
+#installBanner{display:none;margin:12px 14px 0;background:#0d1f3a;
+  border:1px solid #1e4080;border-radius:12px;padding:12px 14px;
+  align-items:center;gap:10px;font-size:13px;color:#7eb8f7}
+#installBanner button{margin-left:auto;flex-shrink:0;background:var(--orange);
+  border:none;border-radius:8px;color:#000;font-weight:700;font-size:13px;
+  padding:7px 14px;cursor:pointer}
+
+/* CONNECTED */
+.connected{margin:12px 14px 0;background:#0a2018;border:1px solid #1a5c38;
+  border-radius:12px;padding:10px 14px;display:flex;align-items:center;
+  gap:10px;font-size:13px;color:#4ade80}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 8px var(--green);flex-shrink:0;animation:pdot 2s infinite}
+@keyframes pdot{0%,100%{box-shadow:0 0 6px var(--green)}50%{box-shadow:0 0 16px var(--green)}}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin:14px;overflow:hidden}
+.chead{background:var(--card2);border-bottom:1px solid var(--border);padding:12px 16px;
+  font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}
+.cbody{padding:16px;display:flex;flex-direction:column;gap:16px}
+
+/* FIELDS */
+.field label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;color:var(--muted);margin-bottom:7px}
+.field input{display:block;width:100%;background:var(--bg);border:1.5px solid var(--border);
+  border-radius:12px;color:var(--text);padding:14px 15px;font-size:17px;font-family:inherit;
+  outline:none;transition:border-color .2s;-webkit-appearance:none;appearance:none}
+.field input:focus{border-color:var(--orange)}
+.field input::placeholder{color:var(--muted)}
+
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+.chip{padding:7px 13px;border-radius:999px;font-size:13px;font-weight:600;
+  background:var(--card2);border:1.5px solid var(--border);color:var(--muted);
+  cursor:pointer;transition:all .15s;white-space:nowrap;
+  -webkit-user-select:none;user-select:none}
+.chip.on{background:var(--orange);border-color:var(--orange);color:#000}
+
+/* FOTO */
+.photo-zone{position:relative;border:2px dashed var(--border);border-radius:12px;
+  background:var(--bg);min-height:90px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:6px;cursor:pointer;
+  transition:border-color .2s;overflow:hidden}
+.photo-zone.filled{border-color:var(--orange)}
+.photo-zone input[type=file]{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;border:none}
+.picon{font-size:30px}.phint{font-size:13px;color:var(--muted)}
+.preview{width:100%;max-height:170px;object-fit:cover;border-radius:10px;display:none}
+.preview.show{display:block}
+.ptxt{display:flex;flex-direction:column;align-items:center;gap:4px}
+.ptxt.hide{display:none}
+
+/* BOTONES */
+.btn-row{display:flex;gap:10px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;border:none;
+  border-radius:14px;cursor:pointer;font-family:inherit;font-weight:700;
+  letter-spacing:.8px;text-transform:uppercase;transition:transform .12s,opacity .15s;
+  -webkit-user-select:none;user-select:none}
+.btn:active{transform:scale(.96)}
+.btn:disabled{opacity:.4;pointer-events:none}
+.btn-add{flex:1;padding:16px 10px;font-size:17px;
+  background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;
+  box-shadow:0 4px 18px rgba(245,166,35,.35)}
+.btn-del{flex:0 0 auto;padding:16px 18px;font-size:17px;
+  background:var(--card2);color:var(--red);border:1.5px solid var(--red)}
+.btn-send{width:100%;padding:18px;font-size:19px;
+  background:linear-gradient(135deg,#166534,var(--green));color:#fff;
+  box-shadow:0 4px 20px rgba(34,197,94,.3)}
+.btn-clearall{width:100%;padding:15px;font-size:16px;
+  background:transparent;color:var(--red);border:1.5px solid var(--red)}
+
+/* LISTA */
+.listwrap{margin:0 14px 14px}
+.listhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.listtitle{font-size:18px;font-weight:800;letter-spacing:1px;color:var(--muted)}
+.badge{background:var(--orange);color:#000;font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px}
+.item{display:flex;align-items:center;gap:12px;background:var(--card);
+  border:1px solid var(--border);border-radius:14px;padding:12px 14px;
+  margin-bottom:10px;animation:fi .22s ease}
+@keyframes fi{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.ithumb{width:54px;height:54px;border-radius:10px;flex-shrink:0;background:var(--card2);
+  border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+  font-size:26px;overflow:hidden}
+.ithumb img{width:100%;height:100%;object-fit:cover}
+.ibody{flex:1;min-width:0}
+.idesc{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.imeta{font-size:12px;color:var(--muted);margin-top:3px;display:flex;flex-wrap:wrap;gap:6px}
+.inote{font-size:11px;color:var(--muted);font-style:italic;margin-top:3px}
+.iqty{font-size:22px;font-weight:800;color:var(--orange);flex-shrink:0}
+.ix{background:none;border:none;color:var(--red);font-size:20px;cursor:pointer;flex-shrink:0;padding:4px 2px;line-height:1}
+.empty{text-align:center;padding:44px 20px;font-size:14px;color:var(--muted)}
+.eicon{font-size:52px;display:block;margin-bottom:10px;opacity:.3}
+
+/* OVERLAY */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:300;
+  flex-direction:column;align-items:center;justify-content:center;gap:20px}
+.overlay.show{display:flex}
+.spinner{width:54px;height:54px;border:5px solid var(--border);border-top-color:var(--orange);
+  border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.overmsg{color:var(--text);font-size:17px;font-weight:700;letter-spacing:.5px}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(22px + env(safe-area-inset-bottom));left:50%;
+  transform:translateX(-50%) translateY(80px);background:var(--green);color:#fff;
+  padding:13px 24px;border-radius:999px;font-size:14px;font-weight:700;
+  z-index:400;pointer-events:none;transition:transform .28s ease;
+  white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.err{background:var(--red)}
+
+.gap{height:12px}.gap2{height:28px}
+</style>
+</head>
+<body>
+
+<iframe name="envioFrame" style="display:none"></iframe>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="hicon">📦</div>
+  <div>
+    <div class="htitle">FALTANTES</div>
+    <div class="hsub">MÓDULO DE CARGA · PEDIDOS</div>
+  </div>
+</div>
+
+<!-- BANNER INSTALAR (Android/Chrome) -->
+<div id="installBanner">
+  <span>📲 Instalá la app en tu celular</span>
+  <button onclick="instalarPWA()">INSTALAR</button>
+</div>
+
+<!-- ESTADO CONEXIÓN -->
+<div class="connected">
+  <div class="dot"></div>
+  <span>Conectado a Google Sheets &nbsp;·&nbsp; hoja <strong style="color:#4ade80">FALTANTES</strong></span>
+</div>
+
+<!-- FORMULARIO -->
+<div class="card">
+  <div class="chead">➕ Nuevo faltante</div>
+  <div class="cbody">
+
+    <div class="field">
+      <label>Descripción del producto *</label>
+      <input type="text" id="fDesc" placeholder="Ej: TRAMPEARA RATA MADERA"
+        autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false">
+    </div>
+
+    <div class="field">
+      <label>Cantidad *</label>
+      <input type="text" id="fCant" placeholder="Ej: 1 CAJA · 50 UN · 3 BOLSONES">
+    </div>
+
+    <div class="field">
+      <label>Proveedor</label>
+      <input type="text" id="fProv" placeholder="Escribí o elegí abajo..."
+        autocapitalize="characters" autocorrect="off">
+      <div class="chips" id="chips"></div>
+    </div>
+
+    <div class="field">
+      <label>Notas / observaciones</label>
+      <input type="text" id="fNota" placeholder="Urgente, pendiente, verificar..."
+        autocapitalize="sentences">
+    </div>
+
+    <div class="field">
+      <label>Foto del producto (opcional)</label>
+      <div class="photo-zone" id="photoZone">
+        <input type="file" id="fFoto" accept="image/*" capture="environment">
+        <div class="ptxt" id="ptxt">
+          <span class="picon">📷</span>
+          <span class="phint">Tocá para foto o galería</span>
+        </div>
+        <img class="preview" id="preview" alt="">
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-add" onclick="agregarItem()">➕ CARGAR EN LISTA</button>
+      <button class="btn btn-del" onclick="limpiar()">🗑</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- LISTA -->
+<div class="listwrap">
+  <div class="listhead">
+    <span class="listtitle">LISTA DE FALTANTES</span>
+    <span class="badge" id="badge">0</span>
+  </div>
+  <div id="lista">
+    <div class="empty"><span class="eicon">📋</span>Todavía no hay faltantes cargados.</div>
+  </div>
+  <div class="gap"></div>
+  <button class="btn btn-send" id="btnEnviar" onclick="enviarTodo()" disabled>
+    📤 ENVIAR TODO A GOOGLE SHEETS
+  </button>
+  <div class="gap"></div>
+  <button class="btn btn-clearall" onclick="borrarTodo()">🗑 BORRAR TODO</button>
+  <div class="gap2"></div>
+</div>
+
+<!-- Overlay spinner -->
+<div class="overlay" id="overlay">
+  <div class="spinner"></div>
+  <div class="overmsg" id="overmsg">Enviando...</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw6FrxdOUEmIhvIniT5UQc7uTm-wEiP5da8qveW1F85oz5eliqNcSm0cr1v6XBX4anz/exec';
+
+const PROVEEDORES = ['FASANI','NEO','EDUARDO','BLEMAN','ELECTROMAYO','PROTEC',
+  'HAMILTON','SUPRABOND','DISAPLA','LLAOLLAO','PILAS DEL OESTE','ZONA MAYORISTA','ITURRIA'];
+
+// ── SERVICE WORKER ────────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+// ── PWA INSTALL (Android/Chrome) ──────────────────────────────────
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBanner').style.display = 'flex';
+});
+window.addEventListener('appinstalled', () => {
+  document.getElementById('installBanner').style.display = 'none';
+});
+function instalarPWA() {
+  if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt = null; }
+}
+
+// ── ÍCONO CANVAS (apple-touch-icon dinámico) ──────────────────────
+(function generarIcono() {
+  const c = document.createElement('canvas');
+  c.width = c.height = 192;
+  const ctx = c.getContext('2d');
+  // Fondo degradado naranja
+  const g = ctx.createLinearGradient(0,0,192,192);
+  g.addColorStop(0,'#f5a623'); g.addColorStop(1,'#e8560b');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.roundRect(0,0,192,192,40);
+  ctx.fill();
+  // Emoji caja
+  ctx.font = '110px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('📦', 96, 100);
+  const url = c.toDataURL('image/png');
+  document.getElementById('appleIcon').href = url;
+})();
+
+// ── ESTADO ────────────────────────────────────────────────────────
+let items = JSON.parse(localStorage.getItem('faltantes') || '[]');
+let foto64 = null;
+
+function guardarLocal() {
+  // Guardamos sin fotos para no exceder localStorage (las fotos son grandes)
+  const sinFotos = items.map(i => ({...i, foto: i.foto ? '__foto__' : null}));
+  try { localStorage.setItem('faltantes', JSON.stringify(sinFotos)); } catch(e) {}
+}
+
+// ── CHIPS ─────────────────────────────────────────────────────────
+const chipsEl = document.getElementById('chips');
+PROVEEDORES.forEach(p => {
+  const el = document.createElement('span');
+  el.className = 'chip'; el.textContent = p;
+  el.addEventListener('click', () => {
+    chipsEl.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+    el.classList.add('on');
+    document.getElementById('fProv').value = p;
+  });
+  chipsEl.appendChild(el);
+});
+
+// ── FOTO ──────────────────────────────────────────────────────────
+document.getElementById('fFoto').addEventListener('change', function () {
+  const file = this.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 800;
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else       { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const cv = document.createElement('canvas');
+      cv.width = w; cv.height = h;
+      cv.getContext('2d').drawImage(img, 0, 0, w, h);
+      foto64 = cv.toDataURL('image/jpeg', 0.72);
+      document.getElementById('preview').src = foto64;
+      document.getElementById('preview').classList.add('show');
+      document.getElementById('ptxt').classList.add('hide');
+      document.getElementById('photoZone').classList.add('filled');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+// ── AGREGAR ───────────────────────────────────────────────────────
+function agregarItem() {
+  const desc = document.getElementById('fDesc').value.trim().toUpperCase();
+  const cant = document.getElementById('fCant').value.trim().toUpperCase();
+  const prov = document.getElementById('fProv').value.trim().toUpperCase();
+  const nota = document.getElementById('fNota').value.trim();
+  if (!desc) { toast('⚠️ Ingresá una descripción', true); return; }
+  if (!cant) { toast('⚠️ Ingresá la cantidad', true); return; }
+  items.unshift({ id: Date.now(), desc, cant, prov, nota, foto: foto64 });
+  guardarLocal(); render(); limpiar();
+  toast('✓ Cargado en lista');
+}
+
+function limpiar() {
+  ['fDesc','fCant','fProv','fNota'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fFoto').value = '';
+  foto64 = null;
+  const prev = document.getElementById('preview');
+  prev.src = ''; prev.classList.remove('show');
+  document.getElementById('ptxt').classList.remove('hide');
+  document.getElementById('photoZone').classList.remove('filled');
+  chipsEl.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+}
+
+function borrarItem(id) { items = items.filter(i => i.id !== id); guardarLocal(); render(); }
+
+function borrarTodo() {
+  if (!items.length) return;
+  if (confirm('¿Borrar todos los faltantes?')) { items = []; guardarLocal(); render(); }
+}
+
+// ── RENDER ────────────────────────────────────────────────────────
+function render() {
+  const el = document.getElementById('lista');
+  document.getElementById('badge').textContent = items.length;
+  document.getElementById('btnEnviar').disabled = !items.length;
+  if (!items.length) {
+    el.innerHTML = '<div class="empty"><span class="eicon">📋</span>Todavía no hay faltantes cargados.</div>';
+    return;
+  }
+  el.innerHTML = items.map(it => `
+    <div class="item">
+      <div class="ithumb">${it.foto && it.foto !== '__foto__' ? `<img src="${it.foto}" alt="">` : '📦'}</div>
+      <div class="ibody">
+        <div class="idesc">${it.desc}</div>
+        <div class="imeta">
+          ${it.prov ? `<span>🏪 ${it.prov}</span>` : ''}
+          <span>🕐 ${new Date(it.id).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}</span>
+        </div>
+        ${it.nota ? `<div class="inote">📝 ${it.nota}</div>` : ''}
+      </div>
+      <div class="iqty">${it.cant}</div>
+      <button class="ix" onclick="borrarItem(${it.id})">✕</button>
+    </div>
+  `).join('');
+}
+
+// ── ENVÍO via form+iframe (máxima compatibilidad Safari/iPhone) ───
+function enviarUno(item, i, total) {
+  return new Promise(resolve => {
+    document.getElementById('overmsg').textContent = `Enviando ${i+1} de ${total}...`;
+    const form = document.createElement('form');
+    form.method = 'GET';
+    form.action = SCRIPT_URL;
+    form.target = 'envioFrame';
+    form.style.display = 'none';
+    [['descripcion', item.desc],['cantidad', item.cant],
+     ['proveedor', item.prov||''],['notas', item.nota||''],
+     ['ts', String(item.id)]].forEach(([k,v]) => {
+      const inp = document.createElement('input');
+      inp.type='hidden'; inp.name=k; inp.value=v;
+      form.appendChild(inp);
+    });
+    document.body.appendChild(form);
+    const iframe = document.querySelector('iframe[name="envioFrame"]');
+    const timer = setTimeout(() => { safeRemove(form); resolve(); }, 6000);
+    iframe.onload = () => { clearTimeout(timer); safeRemove(form); resolve(); };
+    form.submit();
+  });
+}
+function safeRemove(el) { try { document.body.removeChild(el); } catch(e) {} }
+
+async function enviarTodo() {
+  document.getElementById('btnEnviar').disabled = true;
+  document.getElementById('overlay').classList.add('show');
+  const copia = [...items];
+  for (let i = 0; i < copia.length; i++) {
+    await enviarUno(copia[i], i, copia.length);
+    await new Promise(r => setTimeout(r, 700));
+  }
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('btnEnviar').disabled = false;
+  toast(`✅ ${copia.length} faltante${copia.length>1?'s':''} enviado${copia.length>1?'s':''} correctamente`);
+  items = []; guardarLocal(); render();
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────
+function toast(msg, err=false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast'+(err?' err':'');
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3200);
+}
+
+// ── AUTO-MAYÚSCULAS ───────────────────────────────────────────────
+document.getElementById('fDesc').addEventListener('input', function() {
+  const pos = this.selectionStart;
+  this.value = this.value.toUpperCase();
+  this.setSelectionRange(pos, pos);
+});
+
+// ── INICIO ────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
