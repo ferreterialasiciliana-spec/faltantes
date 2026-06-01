@@ -2,7 +2,7 @@
   "name": "Faltantes de Pedido",
   "short_name": "Faltantes",
   "description": "Módulo de carga de faltantes de pedidos del local",
-  "start_url": "/index.html",
+  "start_url": "/faltantes/",
   "display": "standalone",
   "background_color": "#0d0f18",
   "theme_color": "#f5a623",
