@@ -34,6 +34,13 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);
 .htitle{font-size:22px;font-weight:800;letter-spacing:1px;color:var(--orange);line-height:1}
 .hsub{font-size:11px;color:var(--muted);margin-top:2px}
 
+/* NAV PESTAÑAS */
+.nav{display:flex;gap:10px;margin:12px 14px 0}
+.navbtn{flex:1;text-align:center;text-decoration:none;padding:12px;border-radius:12px;
+  font-size:14px;font-weight:800;letter-spacing:.5px;
+  background:var(--card2);border:1.5px solid var(--border);color:var(--muted)}
+.navbtn.on{background:var(--orange);border-color:var(--orange);color:#000}
+
 /* INSTALL BANNER */
 #installBanner{display:none;margin:12px 14px 0;background:#0d1f3a;
   border:1px solid #1e4080;border-radius:12px;padding:12px 14px;
@@ -159,6 +166,12 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);
     <div class="htitle">FALTANTES</div>
     <div class="hsub">MÓDULO DE CARGA · PEDIDOS</div>
   </div>
+</div>
+
+<!-- NAV PESTAÑAS -->
+<div class="nav">
+  <a href="index.html" class="navbtn on">➕ CARGA</a>
+  <a href="pedido.html" class="navbtn">🧾 PEDIDO</a>
 </div>
 
 <!-- BANNER INSTALAR (Android/Chrome) -->
