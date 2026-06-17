@@ -1,4 +1,4 @@
-const CACHE = 'faltantes-v3';
+const CACHE = 'faltantes-v4';
 const ARCHIVOS = ['/index.html', '/pedido.html', '/transito.html', '/manifest.json'];
 
 self.addEventListener('install', e => {
