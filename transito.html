@@ -6,11 +6,11 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Pedido">
+<meta name="apple-mobile-web-app-title" content="Tránsito">
 <meta name="theme-color" content="#f5a623">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" id="appleIcon">
-<title>Pedido</title>
+<title>Tránsito</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -21,18 +21,18 @@
 html,body{min-height:100%;background:var(--bg);color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   font-size:16px;-webkit-text-size-adjust:100%;padding-bottom:env(safe-area-inset-bottom)}
-.header{position:sticky;top:0;z-index:50;background:var(--card);border-bottom:2px solid var(--orange);
+.header{position:sticky;top:0;z-index:50;background:var(--card);border-bottom:2px solid var(--blue);
   padding:calc(env(safe-area-inset-top) + 10px) 18px 12px;display:flex;align-items:center;gap:12px}
 .hicon{width:44px;height:44px;border-radius:12px;flex-shrink:0;
-  background:linear-gradient(135deg,var(--orange),var(--orange2));
+  background:linear-gradient(135deg,#1e40af,var(--blue));
   display:flex;align-items:center;justify-content:center;font-size:22px}
-.htitle{font-size:22px;font-weight:800;letter-spacing:1px;color:var(--orange);line-height:1}
+.htitle{font-size:22px;font-weight:800;letter-spacing:1px;color:#7eb8f7;line-height:1}
 .hsub{font-size:11px;color:var(--muted);margin-top:2px}
 .nav{display:flex;gap:8px;margin:12px 14px 0}
 .navbtn{flex:1;text-align:center;text-decoration:none;padding:12px 4px;border-radius:12px;
   font-size:13px;font-weight:800;letter-spacing:.3px;
   background:var(--card2);border:1.5px solid var(--border);color:var(--muted)}
-.navbtn.on{background:var(--orange);border-color:var(--orange);color:#000}
+.navbtn.on{background:var(--blue);border-color:var(--blue);color:#fff}
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin:14px;overflow:hidden}
 .chead{background:var(--card2);border-bottom:1px solid var(--border);padding:12px 16px;
   font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}
@@ -43,7 +43,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);
 .chip{padding:7px 13px;border-radius:999px;font-size:13px;font-weight:600;
   background:var(--card2);border:1.5px solid var(--border);color:var(--muted);
   cursor:pointer;transition:all .15s;white-space:nowrap;-webkit-user-select:none;user-select:none}
-.chip.on{background:var(--orange);border-color:var(--orange);color:#000}
+.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
 .btn-row{display:flex;gap:10px}
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:14px;
   cursor:pointer;font-family:inherit;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
@@ -51,16 +51,14 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);
 .btn:active{transform:scale(.96)}
 .btn:disabled{opacity:.4;pointer-events:none}
 .btn-add{flex:1;padding:16px 10px;font-size:17px;
-  background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;box-shadow:0 4px 18px rgba(245,166,35,.35)}
-.btn-pdf{width:100%;padding:18px;font-size:19px;
-  background:linear-gradient(135deg,#b91c1c,var(--red));color:#fff;box-shadow:0 4px 20px rgba(239,68,68,.3)}
-.btn-tr{width:100%;padding:16px;font-size:17px;
   background:linear-gradient(135deg,#1e40af,var(--blue));color:#fff;box-shadow:0 4px 18px rgba(59,130,246,.3)}
+.btn-rec{width:100%;padding:18px;font-size:19px;
+  background:linear-gradient(135deg,#166534,var(--green));color:#fff;box-shadow:0 4px 20px rgba(34,197,94,.3)}
 .listwrap{margin:0 14px 14px}
 .listhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .listtitle{font-size:18px;font-weight:800;letter-spacing:1px;color:var(--muted)}
-.badge{background:var(--orange);color:#000;font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px}
-.item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);
+.badge{background:var(--blue);color:#fff;font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px}
+.item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid #1e4080;
   border-radius:14px;padding:12px 14px;margin-bottom:10px;animation:fi .22s ease}
 @keyframes fi{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 .ithumb{width:46px;height:46px;border-radius:10px;flex-shrink:0;background:var(--card2);
@@ -69,11 +67,12 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);
 .idesc{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .imeta{font-size:12px;color:var(--muted);margin-top:3px;display:flex;flex-wrap:wrap;gap:6px}
 .inote{font-size:11px;color:var(--muted);font-style:italic;margin-top:3px}
+.est.tr{color:#7eb8f7;font-weight:800}
 .iqty{font-size:20px;font-weight:800;color:var(--orange);flex-shrink:0}
 .iact{display:flex;flex-direction:column;gap:6px;flex-shrink:0}
 .mini{border:1.5px solid var(--border);background:var(--card2);color:var(--text);border-radius:10px;
   padding:8px 10px;font-size:15px;font-weight:700;cursor:pointer;line-height:1}
-.mini.tr{border-color:var(--blue);color:#7eb8f7}
+.mini.rec{border-color:var(--green);color:#4ade80}
 .mini.del{border-color:var(--red);color:#fca5a5}
 .mini:active{transform:scale(.92)}
 .empty{text-align:center;padding:44px 20px;font-size:14px;color:var(--muted)}
@@ -81,7 +80,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:300;
   flex-direction:column;align-items:center;justify-content:center;gap:20px}
 .overlay.show{display:flex}
-.spinner{width:54px;height:54px;border:5px solid var(--border);border-top-color:var(--orange);
+.spinner{width:54px;height:54px;border:5px solid var(--border);border-top-color:var(--blue);
   border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .overmsg{color:var(--text);font-size:17px;font-weight:700;letter-spacing:.5px}
@@ -99,14 +98,14 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);
 <iframe name="estadoFrame" style="display:none"></iframe>
 
 <div class="header">
-  <div class="hicon">🧾</div>
-  <div><div class="htitle">PEDIDO</div><div class="hsub">FALTANTES PENDIENTES</div></div>
+  <div class="hicon">🚚</div>
+  <div><div class="htitle">EN TRÁNSITO</div><div class="hsub">PEDIDOS ENCARGADOS</div></div>
 </div>
 
 <div class="nav">
   <a href="index.html" class="navbtn">➕ CARGA</a>
-  <a href="pedido.html" class="navbtn on">🧾 PEDIDO</a>
-  <a href="transito.html" class="navbtn">🚚 TRÁNSITO</a>
+  <a href="pedido.html" class="navbtn">🧾 PEDIDO</a>
+  <a href="transito.html" class="navbtn on">🚚 TRÁNSITO</a>
 </div>
 
 <div class="card">
@@ -124,29 +123,25 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);
 
 <div class="listwrap">
   <div class="listhead">
-    <span class="listtitle">PEDIDO / PENDIENTES</span>
+    <span class="listtitle">PRODUCTOS EN TRÁNSITO</span>
     <span class="badge" id="badgeHoja">0</span>
   </div>
-  <div id="listaHoja"><div class="empty"><span class="eicon">📥</span>Cargando faltantes...</div></div>
+  <div id="listaHoja"><div class="empty"><span class="eicon">🚚</span>Cargando...</div></div>
   <div class="gap"></div>
-  <button class="btn btn-pdf" id="btnPDF" onclick="exportarPDF()" disabled>🧾 EXPORTAR PEDIDO EN PDF</button>
-  <div class="gap"></div>
-  <button class="btn btn-tr" id="btnTransito" onclick="marcarPedidoEnTransito()" disabled>🚚 MARCAR PEDIDO EN TRÁNSITO</button>
+  <button class="btn btn-rec" id="btnRecTodo" onclick="recibirTodo()" disabled>✅ MARCAR TODO RECIBIDO</button>
   <div class="gap2"></div>
 </div>
 
 <div class="overlay" id="overlay"><div class="spinner"></div><div class="overmsg" id="overmsg">Leyendo la hoja...</div></div>
 <div class="toast" id="toast"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw6FrxdOUEmIhvIniT5UQc7uTm-wEiP5da8qveW1F85oz5eliqNcSm0cr1v6XBX4anz/exec';
 const SHEET_ID  = '1kesoqCbSH9c0F3ffs8gCQvNeB0ZvFXDSEndt3yvnUAg';
 const SHEET_GID = '331274801';
 const COL = { fecha:0, desc:1, cant:2, prov:3, nota:4, pedido:5, estado:6 };
 
-const MODO = 'pendiente'; // esta pestaña muestra SOLO pendientes
+const MODO = 'transito'; // esta pestaña muestra SOLO los EN TRÁNSITO
 let hojaRows = [];
 let filtroProv = 'TODOS';
 let leidoConScript = false;
@@ -163,7 +158,7 @@ async function cargarDesdeHoja() {
     if (filas) { leidoConScript = true; } else { leidoConScript = false; filas = await leerViaGviz(); }
     hojaRows = (filas || []).filter(pasaModo);
     construirChipsProv(); renderHoja();
-    toast(`✓ ${hojaRows.length} ítem${hojaRows.length!==1?'s':''}`);
+    toast(`✓ ${hojaRows.length} en tránsito`);
   } catch (e) {
     toast('⚠️ No se pudo leer la hoja', true);
     document.getElementById('listaHoja').innerHTML =
@@ -229,16 +224,15 @@ function renderHoja() {
   const el = document.getElementById('listaHoja');
   const filas = filasFiltradas();
   document.getElementById('badgeHoja').textContent = filas.length;
-  document.getElementById('btnPDF').disabled = !filas.length;
-  document.getElementById('btnTransito').disabled = !filas.filter(r => r.fila).length;
+  document.getElementById('btnRecTodo').disabled = !filas.filter(r => r.fila).length;
   if (!filas.length) {
-    el.innerHTML = '<div class="empty"><span class="eicon">📥</span>No hay pendientes para este proveedor.</div>';
+    el.innerHTML = '<div class="empty"><span class="eicon">🚚</span>No hay productos en tránsito.</div>';
     return;
   }
   el.innerHTML = filas.map(it => {
     let acciones = '';
     if (it.fila) {
-      acciones = `<button class="mini tr" title="En tránsito" onclick="marcarUno(${it.fila},'EN TRANSITO')">🚚</button>
+      acciones = `<button class="mini rec" title="Recibido" onclick="marcarUno(${it.fila},'RECIBIDO')">✅</button>
                   <button class="mini del" title="Borrar" onclick="borrarUno(${it.fila}, ${JSON.stringify(it.desc)})">🗑</button>`;
     }
     return `
@@ -248,7 +242,7 @@ function renderHoja() {
         <div class="idesc">${it.desc}</div>
         <div class="imeta">
           <span>🏪 ${it.prov}</span>
-          ${it.fecha ? `<span>🗓 ${it.fecha}</span>` : ''}
+          <span class="est tr">🚚 EN TRÁNSITO</span>
         </div>
         ${it.nota ? `<div class="inote">📝 ${it.nota}</div>` : ''}
       </div>
@@ -258,7 +252,6 @@ function renderHoja() {
   }).join('');
 }
 
-// ── Enviar acciones a la hoja (form+iframe) ──
 function enviarAccion(params) {
   return new Promise(resolve => {
     const form = document.createElement('form');
@@ -285,7 +278,7 @@ async function aplicar(params, msg, etiqueta) {
 }
 
 function marcarUno(fila, estado) {
-  aplicar({ accion:'estado', estado, filas: JSON.stringify([fila]) }, 'Actualizando...', '✓ Marcado en tránsito');
+  aplicar({ accion:'estado', estado, filas: JSON.stringify([fila]) }, 'Actualizando...', '✓ Marcado recibido');
 }
 
 function borrarUno(fila, desc) {
@@ -295,56 +288,12 @@ function borrarUno(fila, desc) {
   }
 }
 
-function marcarPedidoEnTransito() {
+function recibirTodo() {
   const filas = filasFiltradas().filter(r => r.fila).map(r => r.fila);
-  if (!filas.length) { toast('No hay pendientes', true); return; }
-  const txt = filtroProv === 'TODOS' ? 'todo el pedido' : `el pedido de ${filtroProv}`;
-  if (confirm(`¿Marcar ${txt} (${filas.length} ítems) como EN TRÁNSITO?`)) {
-    aplicar({ accion:'estado', estado:'EN TRANSITO', filas: JSON.stringify(filas) }, 'Actualizando...', '✓ Pedido en tránsito');
-  }
-}
-
-function exportarPDF() {
-  const filas = filasFiltradas();
-  if (!filas.length) { toast('⚠️ Nada para exportar', true); return; }
-  if (!window.jspdf || !window.jspdf.jsPDF) { toast('⚠️ PDF no disponible (sin conexión)', true); return; }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'pt', format: 'a4' });
-  const hoy = new Date().toLocaleDateString('es-AR');
-  const margenX = 40; let y = 48;
-  doc.setFont('helvetica','bold'); doc.setFontSize(18);
-  doc.text('PEDIDO DE FALTANTES', margenX, y);
-  doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(110); y += 16;
-  doc.text(`Fecha: ${hoy}`, margenX, y);
-  doc.text(filtroProv === 'TODOS' ? 'Proveedor: TODOS' : `Proveedor: ${filtroProv}`, margenX + 200, y);
-  doc.text(`Items: ${filas.length}`, margenX + 420, y);
-  doc.setTextColor(0); y += 12;
-  const grupos = {};
-  filas.forEach(r => { (grupos[r.prov] = grupos[r.prov] || []).push(r); });
-  Object.keys(grupos).sort().forEach(prov => {
-    const body = grupos[prov].map(r => [r.cant || '', r.desc, r.nota || '']);
-    doc.autoTable({
-      startY: y + 16,
-      head: [[{ content: prov + '   (' + grupos[prov].length + ')', colSpan: 3, styles: { halign: 'left' } }],
-             ['CANT.', 'DESCRIPCION', 'NOTAS']],
-      body: body, theme: 'grid',
-      styles: { font: 'helvetica', fontSize: 10, cellPadding: 5, overflow: 'linebreak' },
-      headStyles: { fillColor: [245,166,35], textColor: 0, fontStyle: 'bold' },
-      columnStyles: { 0: { cellWidth: 55, halign: 'center' }, 2: { cellWidth: 150 } },
-      margin: { left: margenX, right: margenX }
-    });
-    y = doc.lastAutoTable.finalY;
-  });
-  const nombre = filtroProv === 'TODOS' ? 'Pedido_TODOS' : 'Pedido_' + filtroProv.replace(/\s+/g,'_');
-  doc.save(`${nombre}_${hoy.replace(/\//g,'-')}.pdf`);
-  toast('🧾 PDF generado');
-  const filasFila = filas.filter(r => r.fila).map(r => r.fila);
-  if (leidoConScript && filasFila.length) {
-    setTimeout(() => {
-      if (confirm(`PDF generado. ¿Marcar estos ${filasFila.length} ítems como EN TRÁNSITO?`)) {
-        aplicar({ accion:'estado', estado:'EN TRANSITO', filas: JSON.stringify(filasFila) }, 'Actualizando...', '✓ Pedido en tránsito');
-      }
-    }, 600);
+  if (!filas.length) { toast('Nada para marcar', true); return; }
+  const txt = filtroProv === 'TODOS' ? 'todos los productos en tránsito' : `los de ${filtroProv}`;
+  if (confirm(`¿Marcar ${txt} (${filas.length} ítems) como RECIBIDO?`)) {
+    aplicar({ accion:'estado', estado:'RECIBIDO', filas: JSON.stringify(filas) }, 'Actualizando...', '✅ Recibidos');
   }
 }
 
