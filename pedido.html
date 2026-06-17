@@ -173,18 +173,27 @@ async function cargarDesdeHoja() {
   }
 }
 
-async function leerViaScript() {
-  try {
-    const res = await fetch(`${SCRIPT_URL}?accion=leer&_=${Date.now()}`, { cache: 'no-store' });
-    if (!res.ok) return null;
-    const data = await res.json();
-    if (!Array.isArray(data)) return null;
-    return data.map(r => ({
-      fila: r.fila || null, fecha: r.fecha || '', desc: (r.desc||'').toString(),
-      cant: (r.cant||'').toString(), prov: (r.prov||'').toString().trim() || 'SIN PROVEEDOR',
-      nota: (r.nota||'').toString(), pedido: (r.pedido||'').toString(), estado: (r.estado||'').toString()
-    })).filter(r => r.desc);
-  } catch (e) { return null; }
+// Lectura por JSONP (evita el bloqueo CORS del navegador)
+function leerViaScript() {
+  return new Promise(resolve => {
+    const cb = 'cbLeer_' + Date.now();
+    const s = document.createElement('script');
+    let listo = false;
+    function limpiar() { try{document.body.removeChild(s)}catch(e){}; try{delete window[cb]}catch(e){} }
+    window[cb] = function(data) {
+      listo = true; limpiar();
+      if (!Array.isArray(data)) { resolve(null); return; }
+      resolve(data.map(r => ({
+        fila: r.fila || null, fecha: r.fecha || '', desc: (r.desc||'').toString(),
+        cant: (r.cant||'').toString(), prov: (r.prov||'').toString().trim() || 'SIN PROVEEDOR',
+        nota: (r.nota||'').toString(), pedido: (r.pedido||'').toString(), estado: (r.estado||'').toString()
+      })).filter(r => r.desc));
+    };
+    s.onerror = () => { if (!listo) { limpiar(); resolve(null); } };
+    setTimeout(() => { if (!listo) { limpiar(); resolve(null); } }, 8000);
+    s.src = `${SCRIPT_URL}?accion=leer&callback=${cb}&_=${Date.now()}`;
+    document.body.appendChild(s);
+  });
 }
 
 async function leerViaGviz() {
